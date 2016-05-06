@@ -19,6 +19,8 @@ public class AccidentsDataSeparator implements Callable<Long> {
 		this.toSeparateQueue = inputQueue;
 		this.dayTimeAccidentsQueue = dayTimeAccidentsQueue;
 		this.nightTimeAccidentsQueue = nightTimeAccidentsQueue;
+		
+		System.out.println("create "+ AccidentsDataSeparator.class.getName());
 	}
 
 	@Override

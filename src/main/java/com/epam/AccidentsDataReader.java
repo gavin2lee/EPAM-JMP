@@ -58,6 +58,7 @@ public class AccidentsDataReader implements Callable<Long> {
 		boolean isDataLoadFinished = false;
 		while (!isDataLoadFinished) {
 			List<RoadAccident> roadAccidents = getNextBatch(recordIterator);
+			System.out.println("Reader:try to put "+roadAccidents.size());
 			toEnrichQueue.put(roadAccidents);
 			readSize += roadAccidents.size();
 

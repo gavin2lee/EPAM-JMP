@@ -17,7 +17,13 @@ public class AccidentsDataEnricher implements Callable<Long> {
 	private BlockingQueue<List<RoadAccident>> toEnrichQueue;
 	private BlockingQueue<List<EnrichedRoadAccident>> toSeparateQueue;
 
-	private PoliceForceService policeForceService = new PoliceForceService();
+	private static final PoliceForceService policeForceService;
+
+	static {
+		synchronized (AccidentsDataEnricher.class) {
+			policeForceService = new PoliceForceService();
+		}
+	}
 
 	public static final String LOCAL_TIME_FORMAT = "HH:mm:ss:SSS";
 
@@ -36,11 +42,13 @@ public class AccidentsDataEnricher implements Callable<Long> {
 		super();
 		this.toEnrichQueue = toEnrichQueue;
 		this.toSeparateQueue = toSeparateQueue;
+		
+		System.out.println("create "+AccidentsDataEnricher.class.getName());
 	}
 
 	@Override
 	public Long call() throws Exception {
-		
+
 		Long count = 0L;
 
 		List<RoadAccident> toEnrichList = null;
@@ -52,11 +60,11 @@ public class AccidentsDataEnricher implements Callable<Long> {
 				TimeosDay timeosDay = decideTimeosDay(ra);
 				EnrichedRoadAccident era = new EnrichedRoadAccidentBuilder(ra).withForceContact(contractNo)
 						.withTimeosDay(timeosDay).build();
-				
+
 				toSeparateList.add(era);
 				count++;
 			}
-			
+
 			toSeparateQueue.put(toSeparateList);
 		}
 		return count;
@@ -69,16 +77,16 @@ public class AccidentsDataEnricher implements Callable<Long> {
 	private TimeosDay decideTimeosDay(RoadAccident ra) {
 
 		LocalTime time = ra.getTime();
-		
-		if( (time.compareTo(ZERO_MIN) >= 0) && (time.compareTo(SIX)<0)){
+
+		if ((time.compareTo(ZERO_MIN) >= 0) && (time.compareTo(SIX) < 0)) {
 			return TimeosDay.NIGHT;
-		}else if( (time.compareTo(SIX) >= 0) && (time.compareTo(TWELVE) < 0) ){
+		} else if ((time.compareTo(SIX) >= 0) && (time.compareTo(TWELVE) < 0)) {
 			return TimeosDay.MORNING;
-		}else if( (time.compareTo(TWELVE) >= 0) && (time.compareTo(EIGHTEEN) < 0) ){
+		} else if ((time.compareTo(TWELVE) >= 0) && (time.compareTo(EIGHTEEN) < 0)) {
 			return TimeosDay.AFTERNOON;
-		}else if ( (time.compareTo(EIGHTEEN) >= 0 ) && (time.compareTo(ZERO_MAX) <= 0) ){
+		} else if ((time.compareTo(EIGHTEEN) >= 0) && (time.compareTo(ZERO_MAX) <= 0)) {
 			return TimeosDay.EVENING;
-		}else{
+		} else {
 			return null;
 		}
 	}

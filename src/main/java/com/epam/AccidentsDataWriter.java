@@ -14,7 +14,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import com.epam.data.EnrichedRoadAccident;
-import com.epam.data.RoadAccident;
 
 public class AccidentsDataWriter implements Callable<Long> {
 	private String targetFileName;
@@ -22,7 +21,7 @@ public class AccidentsDataWriter implements Callable<Long> {
 
 	private int waitTime = 5;
 	
-	private Object [] headers = {
+	private Object [] headers = new Object[]{
 			"Accident_Index",
 			"Longitude",
 			"Latitude",
@@ -44,11 +43,9 @@ public class AccidentsDataWriter implements Callable<Long> {
 	public AccidentsDataWriter(String targetFileName, BlockingQueue<EnrichedRoadAccident> inputQueue) {
 		this.targetFileName = targetFileName;
 		this.toWriteQueue = inputQueue;
-		try {
-			writeHeader();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		
+		System.out.println("create "+AccidentsDataWriter.class.getName());
 	}
 	
 	private void writeHeader() throws IOException{
@@ -61,6 +58,7 @@ public class AccidentsDataWriter implements Callable<Long> {
 			csvPrinter.flush();
 			csvPrinter.close();
 			writer.close();
+			System.out.println("Write Headers");
 		}
 		
 		
@@ -68,9 +66,16 @@ public class AccidentsDataWriter implements Callable<Long> {
 
 	@Override
 	public Long call() throws Exception {
+		//writeHeader();
+		
 		Long count = 0L;
 		Writer writer = new FileWriter(targetFileName);
 		CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withRecordSeparator("\n"));
+		
+		csvPrinter.printRecord(headers);
+		csvPrinter.flush();
+		writer.flush();
+		
 		EnrichedRoadAccident era = null;
 		while ((era = toWriteQueue.poll(waitTime, TimeUnit.MINUTES)) != null) {
 			csvPrinter.printRecord(assembleRecord(era));
@@ -108,6 +113,7 @@ public class AccidentsDataWriter implements Callable<Long> {
 		r.add(String.valueOf(a.getLongitude()));
 		r.add(String.valueOf(a.getLatitude()));
 		r.add(a.getPoliceForce());
+		r.add(a.getAccidentSeverity());
 		
 		r.add(String.valueOf(a.getNumberOfVehicles()));
 		r.add(String.valueOf(a.getNumberOfCasualties()));
