@@ -1,23 +1,25 @@
 package com.epam.dbservice;
 
-import java.util.Date;
+import com.epam.entities.Accident;
+import com.epam.entities.RoadSurface;
+import com.epam.entities.WeatherCondition;
 
-import com.epam.data.RoadAccident;
+import java.util.Date;
 
 public interface AccidentService {
 	
 	// scenario 1
-    RoadAccident findOne(String accidentId);
+    Accident findOne(String accidentId);
     
     // scenario 2
-    Iterable<RoadAccident> getAllAccidentsByRoadCondition();
+    Iterable<Accident> getAllAccidentsByRoadCondition(RoadSurface roadCondition);
     
     // scenario 3
-    Iterable<RoadAccident> getAllAccidentsByWeatherConditionAndYear(String weatherCondition,String year);
+    Iterable<Accident> getAllAccidentsByWeatherConditionAndYear(WeatherCondition weatherCondition, String year);
     
  // scenario 4
-    Iterable<RoadAccident> getAllAccidentsByDate(Date date);
+    Iterable<Accident> getAllAccidentsByDate(Date date);
 
-    Boolean update(RoadAccident roadAccident);
+    Boolean update(Accident roadAccident);
 
 }

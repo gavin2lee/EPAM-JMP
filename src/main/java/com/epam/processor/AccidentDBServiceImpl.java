@@ -4,35 +4,35 @@ import java.util.Date;
 
 import com.epam.data.RoadAccident;
 import com.epam.dbservice.AccidentService;
+import com.epam.entities.Accident;
+import com.epam.entities.RoadSurface;
+import com.epam.entities.WeatherCondition;
 
 public class AccidentDBServiceImpl implements AccidentService {
 
-	public RoadAccident findOne(String accidentId) {
-		// TODO Auto-generated method stub
+
+	@Override
+	public Accident findOne(String accidentId) {
 		return null;
 	}
 
-	public Iterable getAllAccidentsByRoadCondition() {
-		// TODO Auto-generated method stub
+	@Override
+	public Iterable<Accident> getAllAccidentsByRoadCondition(RoadSurface roadCondition) {
 		return null;
 	}
 
-	public Iterable getAllAccidentsByWeatherConditionAndYear(
-			String weatherCondition, String year) {
-		// TODO Auto-generated method stub
+	@Override
+	public Iterable<Accident> getAllAccidentsByWeatherConditionAndYear(WeatherCondition weatherCondition, String year) {
 		return null;
 	}
 
-	public Iterable<RoadAccident> getAllAccidentsByDate(Date date) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Boolean update(RoadAccident roadAccident) {
-		// TODO Auto-generated method stub
+	@Override
+	public Iterable<Accident> getAllAccidentsByDate(Date date) {
 		return null;
 	}
-	
-	
 
+	@Override
+	public Boolean update(Accident roadAccident) {
+		return null;
+	}
 }
